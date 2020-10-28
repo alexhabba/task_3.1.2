@@ -14,6 +14,8 @@ import web.repository.RoleDao;
 import web.repository.UserDao;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,26 +55,23 @@ public class AdminController {
 
     @PostMapping("/add")
     public String registerNewUser(@ModelAttribute User user) {
-//        if (userDao.findByEmail(user.getEmail()) == null) {
-//            if (user.getPassword().equals(user.getPasswordRepeat())) {
-//                user.setPassword(passwordEncoder.encode(user.getPassword()));
-//                user.setRoles(Collections.singleton(roleDao.findById(1L).get()));
-//                userDao.save(user);
-//            }
-//        }
+        if (userDao.findByEmail(user.getEmail()) == null) {
+            if (user.getPassword().equals(user.getPasswordRepeat())) {
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+                user.setRoles(Collections.singletonList(roleDao.findById(1L).get()));
+                userDao.save(user);
+            }
+        }
         return "redirect:/admin";
     }
 
-    @GetMapping("/index")
-    public String edit() {
-        return "index";
-    }
+
 //
-//    @PostMapping("/edit/{page}")
-//    public String edit(@ModelAttribute User user, @PathVariable Integer page) {
-//        userDao.save(user);
-//        return "redirect:/admin/" + page;
-//    }
+    @PostMapping("/edit/{page}")
+    public String edit(@ModelAttribute User user, @PathVariable Integer page) {
+        userDao.save(user);
+        return "redirect:/admin/" + page;
+    }
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Long id, HttpServletRequest request) {
